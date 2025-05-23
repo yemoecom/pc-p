@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Felix的商品提报</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    body {
+      width: 300px;
+      padding: 16px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7;
+    }
+
+    .title-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    .options {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .option {
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .option input[type="radio"] {
+      margin-right: 10px;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .option label {
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    button {
+      min-width: 80px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #start {
+      background: #fe2c55;
+      color: white;
+    }
+
+    #start:hover {
+      background: #e62a4d;
+    }
+
+    #stop {
+      background: #f1f1f2;
+      color: #4a4a4a;
+    }
+
+    #stop:hover {
+      background: #e6e6e7;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e8e8e8;
+      margin: 12px 0;
+    }
+
+    .option.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .option.disabled label {
+      cursor: not-allowed;
+    }
+
+    .option.disabled input[type="radio"] {
+      cursor: not-allowed;
+    }
+
+    .footer {
+      margin-top: 8px;
+      text-align: right;
+      padding-right: 4px;
+    }
+
+    #export-logs {
+      margin-left: auto;
+      background: transparent;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      opacity: 0.4;
+      width: 16px;
+      height: 16px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEzIDNhMSAxIDAgMTAtMiAwdjEwLjE3bC0yLjgzLTIuODNhMSAxIDAgMTAtMS40MSAxLjQxbDQuNTkgNC41OWEuOTkuOTkgMCAwMDEuNDEgMGw0LjU5LTQuNTlhMSAxIDAgMTAtMS40MS0xLjQxTDEzIDEzLjE3VjN6bS0xIDE2Ljk1YTEgMSAwIDAxLTEtMUg1YTIgMiAwIDAxLTItMlY2YTIgMiAwIDAxMi0yaDJhMSAxIDAgMDEwIDJINWExIDEgMCAwMC0xIDF2MTBhMSAxIDAgMDAxIDFoMTRhMSAxIDAgMDAxLTFWN2ExIDEgMCAwMC0xLTFoLTJhMSAxIDAgMDEwLTJoMmEyIDIgMCAwMTIgMnYxMGEyIDIgMCAwMS0yIDJoLTZhMSAxIDAgMDEtMS0xeiIgZmlsbD0iY3VycmVudENvbG9yIi8+PC9zdmc+');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    
+    #export-logs:hover {
+      opacity: 0.8;
+    }
+
+    .subscription-info {
+      margin: 8px 0 12px;
+      padding: 8px 12px;
+      background: #fff5f6;
+      border: 1px solid rgba(254, 44, 85, 0.2);
+      border-radius: 4px;
+      font-size: 12px;
+      color: #fe2c55;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .subscription-status {
+      flex: 1;
+    }
+
+    .subscription-button {
+      padding: 4px 8px;
+      border: 1px solid #fe2c55;
+      border-radius: 4px;
+      background: transparent;
+      color: #fe2c55;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 12px;
+      white-space: nowrap;
+    }
+
+    .subscription-button:hover {
+      background: #fff0f1;
+    }
+
+    .subscription-info.trial {
+      background: #e6f7ff;
+      border-color: rgba(24, 144, 255, 0.2);
+      color: #1890ff;
+    }
+
+    .subscription-info.active {
+      background: #f6ffed;
+      border-color: rgba(82, 196, 26, 0.2);
+      color: #52c41a;
+    }
+
+    .subscription-info.expiring {
+      background: #fff7e6;
+      border-color: rgba(250, 140, 22, 0.2);
+      color: #fa8c16;
+    }
+
+    .subscription-info.trial .subscription-button {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+
+    .subscription-info.active .subscription-button {
+      border-color: #52c41a;
+      color: #52c41a;
+    }
+
+    .subscription-info.expiring .subscription-button {
+      border-color: #fa8c16;
+      color: #fa8c16;
+    }
+  </style>
+</head>
+<body>
+  <div class="title-container">
+    <div class="spacer" style="width: 16px;"></div>
+    <div class="title">Felix商品提报助手</div>
+    <button id="export-logs" title="导出日志"></button>
+  </div>
+  
+  <div class="options">
+    <div class="option">
+      <input type="radio" id="search" name="report-type" value="热门搜索关键词" checked>
+      <label for="search">热门搜索关键词</label>
+    </div>
+    <div class="divider"></div>
+    <div class="option">
+      <input type="radio" id="topic" name="report-type" value="热门话题标签">
+      <label for="topic">热门话题标签</label>
+    </div>
+    <div class="divider"></div>
+    <div class="option">
+      <input type="radio" id="product" name="report-type" value="热门商品">
+      <label for="product">热门商品</label>
+    </div>
+  </div>
+  <div class="buttons">
+    <button id="start">开始</button>
+    <button id="stop">停止</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 
